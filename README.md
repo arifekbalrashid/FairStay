@@ -320,15 +320,52 @@ npm install
 npm run dev
 ```
 
-### Docker
+Access the app at `http://localhost:5173`.
+
+---
+
+## Deployment
+
+### One-Click Deploy to Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/arifekbalrashid/FairStay)
+
+1. Click the button above (or go to [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint**)
+2. Connect the `FairStay` repo
+3. Set the `GROQ_API_KEY` environment variable (get a free key at [console.groq.com](https://console.groq.com))
+4. Deploy — the app auto-seeds the database on first boot
+
+### Docker (Self-Hosted)
 
 ```bash
+# Build and run the production image
 cp backend/.env.example backend/.env
-# Add your API keys
+# Edit .env — add at least one LLM API key
+
 docker compose up --build
 ```
 
-Access the app at `http://localhost:5173` (dev) or `http://localhost:3000` (Docker).
+The app will be available at `http://localhost:8000`. The multi-stage Dockerfile builds the React frontend and serves it from FastAPI as a single service.
+
+### Manual Deploy (Any Platform)
+
+```bash
+# 1. Build frontend
+cd frontend && npm ci && npm run build
+
+# 2. Copy build into backend
+cp -r dist/ ../backend/static/
+
+# 3. Run backend (serves both API + frontend)
+cd ../backend
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+**Required environment variables for production:**
+- `GROQ_API_KEY` (or `OPENAI_API_KEY` or `GOOGLE_API_KEY`) — at least one LLM key
+- `DATABASE_URL` — defaults to SQLite, fine for single-server deployments
+- `CORS_ORIGINS` — set to `*` for production single-service deploy
 
 ---
 
@@ -336,14 +373,16 @@ Access the app at `http://localhost:5173` (dev) or `http://localhost:3000` (Dock
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `OPENAI_API_KEY` | No | - | OpenAI API key for Party A agent |
+| `GROQ_API_KEY` | Recommended | - | Groq API key (free tier, fast inference) |
+| `GROQ_MODEL` | No | `qwen/qwen3.6-27b` | Groq model name |
+| `OPENAI_API_KEY` | No | - | OpenAI API key |
 | `OPENAI_MODEL` | No | `gpt-4o-mini` | OpenAI model name |
-| `GOOGLE_API_KEY` | No | - | Google AI API key for Party B agent |
-| `GOOGLE_MODEL` | No | `gemini-3.6-flash` | Google model name |
+| `GOOGLE_API_KEY` | No | - | Google AI API key |
+| `GOOGLE_MODEL` | No | `gemini-2.0-flash` | Google model name |
 | `DATABASE_URL` | No | `sqlite+aiosqlite:///./fairdeal.db` | Database connection string |
 | `MAX_ROUNDS` | No | `10` | Maximum negotiation rounds |
 | `MAX_RETRIES` | No | `3` | Max retries per LLM call |
-| `CORS_ORIGINS` | No | `http://localhost:5173` | Allowed CORS origins |
+| `CORS_ORIGINS` | No | `http://localhost:5173` | Allowed CORS origins (use `*` in production) |
 
 **Note**: The app runs in **deterministic fallback mode** if no API keys are configured. All features work except LLM-generated offers (replaced by rule-based heuristics).
 
@@ -355,21 +394,11 @@ Access the app at `http://localhost:5173` (dev) or `http://localhost:3000` (Dock
 
 1. Start the backend and frontend (see Local Setup)
 2. Open `http://localhost:5173`
-3. Click **"🎯 Demo Mode"**
-4. The rental negotiation scenario loads with pre-filled seed data
-5. Click **"🚀 Start Negotiation"**
+3. Log in as **Guest**
+4. Browse properties and click one to view details
+5. Click **Start Negotiation** and set your budget preferences
 6. Watch the AI agents negotiate in real-time
-7. Review the agreement and approve/reject for each party
-
-### Seed Scenario: Apartment Negotiation
-
-```
-Tenant: Ideal ₹17,000 / Max ₹20,000 / Wants furnished + parking
-Landlord: Ideal ₹23,000 / Min ₹18,000 / Wants long lease
-
-The agents dynamically negotiate a compromise.
-No hardcoded responses — every result is generated live.
-```
+7. Review the agreement and approve/reject
 
 ---
 
@@ -382,6 +411,7 @@ No hardcoded responses — every result is generated live.
 5. **Deterministic fallback** — while functional, it produces less creative negotiations than real LLM agents
 6. **No rate limiting** — API endpoints are not rate-limited
 7. **Evaluation harness** — runs only deterministic tests; LLM-based evaluation requires API keys
+
 
 ---
 
