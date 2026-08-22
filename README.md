@@ -461,7 +461,3 @@ fairdeal/
 ```
 
 ---
-
-## License
-
-Built for the 24-hour AI Hackathon. MIT License.
