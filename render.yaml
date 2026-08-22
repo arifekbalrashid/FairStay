@@ -1,0 +1,30 @@
+# ============================================
+# Render Blueprint — One-Click Deploy
+# https://render.com/docs/blueprint-spec
+# ============================================
+
+services:
+  - type: web
+    name: fairstay
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      # At least one LLM key is required for AI negotiations
+      - key: GROQ_API_KEY
+        sync: false  # User sets manually in dashboard
+      - key: GROQ_MODEL
+        value: qwen/qwen3.6-27b
+      - key: DATABASE_URL
+        value: sqlite+aiosqlite:///./data/fairstay.db
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: MAX_ROUNDS
+        value: "10"
+    disk:
+      name: fairstay-data
+      mountPath: /app/data
+      sizeGB: 1

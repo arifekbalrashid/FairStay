@@ -55,3 +55,9 @@ logs/
 
 # Test files with secrets
 backend/test_llm*.py
+
+# Production static (served by backend)
+backend/static/
+
+# Data directory
+data/

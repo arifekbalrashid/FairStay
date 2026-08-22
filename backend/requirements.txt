@@ -9,6 +9,7 @@ langchain==0.3.14
 langchain-core==0.3.30
 langchain-openai==0.3.0
 langchain-google-genai==2.0.8
+langchain-groq==0.3.2
 langgraph==0.2.62
 
 # Database
