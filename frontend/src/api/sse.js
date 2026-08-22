@@ -2,10 +2,10 @@
  * SSE (Server-Sent Events) connection manager.
  */
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 export function subscribeToEvents(negotiationId, onEvent, onError, onComplete) {
-  const url = `/api/negotiations/${negotiationId}/events`;
+  const url = `${API_BASE}/api/negotiations/${negotiationId}/events`;
   const source = new EventSource(url);
 
   source.onmessage = (event) => {

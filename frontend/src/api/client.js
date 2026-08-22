@@ -1,8 +1,8 @@
 /**
- * API client for FairDeal backend.
+ * API client for FairStay backend.
  */
 
-const API_BASE = '';  // Uses Vite proxy
+const API_BASE = import.meta.env.VITE_API_URL || '';  // Empty = Vite proxy (dev), URL = production
 
 async function request(path, options = {}) {
   const url = `${API_BASE}${path}`;
