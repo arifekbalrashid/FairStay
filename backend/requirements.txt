@@ -1,0 +1,31 @@
+# Web framework
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-dotenv==1.0.1
+python-multipart==0.0.20
+
+# AI / LLM
+langchain==0.3.14
+langchain-core==0.3.30
+langchain-openai==0.3.0
+langchain-google-genai==2.0.8
+langgraph==0.2.62
+
+# Database
+sqlalchemy[asyncio]==2.0.36
+aiosqlite==0.20.0
+
+# Data validation
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# Logging
+structlog==24.4.0
+
+# HTTP
+httpx==0.28.1
+sse-starlette==2.2.1
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.25.0
