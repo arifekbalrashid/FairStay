@@ -6,7 +6,7 @@ python-multipart==0.0.20
 
 # AI / LLM
 langchain==0.3.14
-langchain-core==0.3.30
+langchain-core>=0.3.49
 langchain-openai==0.3.0
 langchain-google-genai==2.0.8
 langchain-groq==0.3.2
